@@ -46,6 +46,8 @@ def get_children_settings(settings, parent_key):
       {'hashalg': 'md5'}
 
     """
+    # needed to support expanding ENV vars from ini.
+    from os.path import expandvars
     # the +1 is the . between parent and child settings.
     parent_len = len(parent_key) + 1
     children = {}
