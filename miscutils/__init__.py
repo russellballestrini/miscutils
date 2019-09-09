@@ -2,6 +2,7 @@ from ago import human
 
 from datetime import datetime
 
+
 def generate_password(size=32):
     """Return a system generated password"""
     from string import letters, digits
@@ -67,6 +68,11 @@ def timestamp_to_datetime(timestamp):
 
 def timestamp_to_date_string(timestamp):
     return timestamp_to_datetime(timestamp).strftime("%b %d, %Y %I:%M %P")
+
+
+def datetime_to_timestamp(dt):
+    epoch_dt = datetime(1970,1,1)
+    return (dt - epoch_dt).total_seconds()
 
 
 def timestamp_to_ago_string(timestamp):
