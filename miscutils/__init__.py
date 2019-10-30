@@ -2,6 +2,9 @@ from ago import human
 
 from datetime import datetime
 
+from . import hex_color_scale
+
+
 def generate_password(size=32):
     """Return a system generated password"""
     from string import letters, digits
