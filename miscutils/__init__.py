@@ -2,7 +2,7 @@ from ago import human
 
 from datetime import datetime
 
-from . import hex_color_scale
+from .hex_color import color_scale
 
 
 def generate_password(size=32):
