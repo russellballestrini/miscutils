@@ -72,6 +72,11 @@ def timestamp_to_date_string(timestamp):
     return timestamp_to_datetime(timestamp).strftime("%b %d, %Y %I:%M %P")
 
 
+def datetime_to_timestamp(dt):
+    epoch_dt = datetime(1970,1,1)
+    return (dt - epoch_dt).total_seconds()
+
+
 def timestamp_to_ago_string(timestamp):
     """Accepts a timestamp and returns a human readable string"""
     return human(timestamp_to_datetime(timestamp), 2, abbreviate=True)
