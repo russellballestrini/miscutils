@@ -17,7 +17,7 @@ def is_phone_number_valid(phone_number):
         return False
 
     # must be at least 10 digits.
-    if phone_number < 10:
+    if len(phone_number) < 10:
         return False
 
     return True
