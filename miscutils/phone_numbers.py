@@ -7,6 +7,10 @@ def is_phone_number_valid(phone_number):
     phone_number = phone_number.replace(".", "")
     # allow spaces.
     phone_number = phone_number.replace(" ", "")
+    # allow spaces.
+    phone_number = phone_number.replace("(", "")
+    # allow spaces.
+    phone_number = phone_number.replace(")", "")
 
     # must be left with only digits.
     if not phone_number.isdigit():
