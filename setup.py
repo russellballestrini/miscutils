@@ -34,3 +34,11 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
 )
+
+# this isn't hosted in pypi, it's open source and you may include it using
+# something like this in your project's requirements.txt.
+#
+# my miscutils checked out via git as an editable package.
+# git+https://github.com/russellballestrini/miscutils.git#egg=miscutils
+
+
