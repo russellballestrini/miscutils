@@ -40,5 +40,3 @@ setup(
 #
 # my miscutils checked out via git as an editable package.
 # git+https://github.com/russellballestrini/miscutils.git#egg=miscutils
-
-

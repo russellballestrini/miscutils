@@ -2,6 +2,8 @@ from markdown import markdown
 
 from functools import partial
 
+from collections import defaultdict
+
 from bleach.sanitizer import Cleaner
 from bleach.linkifier import LinkifyFilter
 from bleach.callbacks import nofollow, target_blank
@@ -12,33 +14,68 @@ from bs4 import BeautifulSoup
 
 import miniuri
 
+import logging
 
-def default_cleaner(conditional_tag_whitelist=None):
+log = logging.getLogger(__name__)
+
+default_tag_acl = defaultdict(list)
+
+
+def default_cleaner(tag_acl=None):
     """
     Returns a default Cleaner object.
 
-    We use BeautifulSoup to conditionally whitelist tags 
-    based on approved attributes and attribute_value pairs.
+    We use BeautifulSoup to conditionally whitelist or blacklist
+    tags based on tag attr_name and attr_value pairs.
     
-    For example, this will whitelist Mathjax:
+    For example, this will whitelist Mathjax script tags:
     
-    conditional_tag_whitelist = {
+    tag_acl = {
         "script": [
-            ("type", "math/tex; mode=display"),
+            ("type", "math/tex; mode=display", "allow"),
+        ],
+    }
+
+    While this example will blacklist Mathjax script tags:
+    
+    tag_acl = {
+        "script": [
+            ("type", "math/tex; mode=display", "deny"),
         ],
     }
     
     """
-    if conditional_tag_whitelist is None:
-        conditional_tag_whitelist.keys = {}
+    if tag_acl is None:
+        tag_acl.keys = {}
 
     maybe_safe_tags = ["pre", "table", "tr", "td"]
 
-    tags = maybe_safe_tags + conditional_tag_whitelist.keys() + markdown_tags
+    tags = maybe_safe_tags + tag_acl.keys() + markdown_tags
     attrs = markdown_attrs
 
     attrs["img"].append("width")
     attrs["span"] = ["class"]
+
+    # Whitelist and blacklist tag_name/attr/attr_value to get past bleach.
+    # We will conditionally filter tags using BeautifulSoup.
+    for tag_name in tag_acl.keys():
+
+        # tag_name, for example "script".
+
+        for attr_name, attr_value, allow_or_deny in tag_acl[tag_name]:
+
+            if allow_or_deny == "allow":
+
+                # attr_name, for example "type".
+                # attr_value, for example "math/tex; mode=display".
+
+                if tag_name not in attrs:
+                    # if tag_name not in attrs, create it as an empty list.
+                    attrs[tag_name] = []
+
+                # append the attr_name to the map of approved
+                # attributes for the given tag_name.
+                attrs[tag_name].append(attr_name)
 
     cleaner = Cleaner(tags=tags, attributes=attrs, styles=all_styles)
 
@@ -49,8 +86,8 @@ def default_cleaner(conditional_tag_whitelist=None):
     # absolute domain, used for turning relative paths into absolute.
     cleaner.absolute_domain = ""
     # add conditional_whitelist_tags to cleaner object.
-    cleaner.conditional_tag_whitelist = conditional_tag_whitelist
-    
+    cleaner.tag_acl = tag_acl
+
     return cleaner
 
 
@@ -61,6 +98,7 @@ def markdown_to_raw_html(data):
         extensions=[
             "markdown.extensions.codehilite",
             "markdown.extensions.fenced_code",
+            "mdx_math",
         ],
     )
 
@@ -69,38 +107,53 @@ def conditional_tag_filter(soup, cleaner):
     """
     Use BeautifulSoup `Soup` object to filter out non-whitelisted tags.
     """
-     
+
     # bleach does not have a way to conditionally accept tags whitelists.
-    for tag_name in cleaner.conditional_tag_whitelist.keys():
+    for tag_name in cleaner.tag_acl.keys():
 
         # tag_name for example "script"
 
-        for tag in soup.find_all(tag_name):
+        for attr_name, attr_value, allow_or_deny in cleaner.tag_acl[tag_name]:
 
-            # tag is a BeautifulSoup tag object.
+            #
+            # tag attr_name:
+            #
+            #   * "type"
+            #   * "id"
+            #   * "class"
+            #   * ect
+            #
+            # tag attr_value:
+            #
+            #   * "math/tex; mode=display"
+            #   * "<uuid>"
+            #   * ect
+            #
+            # allow_or_deny:
+            #
+            #  * "allow"
+            #  * "deny"
+            #
+            log.info("{} {} {}".format(attr_name, attr_value, allow_or_deny))
 
-            for attr, attr_value in cleaner.conditional_tag_whitelist[tag_name]:
+            for tag in soup.find_all(tag_name):
 
-                # tag attr:
-                #
-                #   * "type"
-                #   * "id"
-                #   * "class"
-                #   * ect
-                #
-                # tag attr_value:
-                #
-                #   * "math/tex; mode=display"
-                #   * "<uuid>"
-                #   * ect
-                #
+                # tag is a BeautifulSoup tag object.
+                log.info("{}".format(tag.attrs.get(attr_name)))
 
-                if tag.attrs.get(attr) == attr_value:
-                    # this tag attr/attr_value is whitelisted.
-                    continue
+                if allow_or_deny == "allow":
 
+                    if tag.attrs.get(attr_name) == attr_value:
+                        # this tag attr_name/attr_value is whitelisted.
+                        continue
+
+                log.debug(
+                    "Extracting {} tag with attr_name {} and attr_value {}".format(
+                        tag_name, attr_name, attr_value
+                    )
+                )
                 # remove this tag.
-                # this tag attr:attr_value is not whitelisted.
+                # this tag attr_name:attr_value is _not_ whitelisted.
                 tag.extract()
 
     return soup
@@ -126,6 +179,7 @@ def protect_links(soup, cleaner):
             # domain not in whitelist, replace a_tag with "[link removed]".
             a_tag.replace_with("[link removed]")
 
+    return soup
 
 
 def clean_raw_html(raw_html, cleaner=None):
