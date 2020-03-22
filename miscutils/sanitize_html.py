@@ -91,16 +91,16 @@ def default_cleaner(tag_acl=None):
     return cleaner
 
 
-def markdown_to_raw_html(data):
+def markdown_to_raw_html(data, extra_extensions=None):
     """Accepts a markdown string, returns raw unsanitized HTML"""
-    return markdown(
-        data,
-        extensions=[
-            "markdown.extensions.codehilite",
-            "markdown.extensions.fenced_code",
-            "mdx_math",
-        ],
-    )
+    extensions=[
+        "markdown.extensions.codehilite",
+        "markdown.extensions.fenced_code",
+    ]
+    if extra_extensions is not None:
+        extensions.extend(extra_extensions)
+
+    return markdown(data, extensions=extensions)
 
 
 def conditional_tag_filter(soup, cleaner):
