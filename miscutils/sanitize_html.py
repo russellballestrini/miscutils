@@ -46,7 +46,7 @@ def default_cleaner(tag_acl=None):
     
     """
     if tag_acl is None:
-        tag_acl.keys = {}
+        tag_acl = {}
 
     maybe_safe_tags = ["pre", "table", "tr", "td"]
 
