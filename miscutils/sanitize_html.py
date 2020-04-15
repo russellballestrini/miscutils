@@ -18,7 +18,9 @@ import logging
 
 log = logging.getLogger(__name__)
 
-default_tag_acl = defaultdict(list)
+
+def default_tag_acl():
+    return defaultdict(list)
 
 
 def default_cleaner(tag_acl=None):
@@ -56,7 +58,8 @@ def default_cleaner(tag_acl=None):
     attrs["img"].append("width")
     attrs["span"] = ["class"]
 
-    # Whitelist and blacklist tag_name/attr/attr_value to get past bleach.
+    # Allow both whitelist and blacklist tag_name/attr/attr_value
+    # to get past bleach.
     # We will conditionally filter tags using BeautifulSoup.
     for tag_name in tag_acl.keys():
 
@@ -109,45 +112,53 @@ def conditional_tag_filter(soup, cleaner):
     """
 
     # bleach does not have a way to conditionally accept tags whitelists.
+    # so we built our own way.
+
+    log.info(cleaner.tag_acl)
+
+    # for each tag_name in the tag_acl ...
     for tag_name in cleaner.tag_acl.keys():
 
-        # tag_name for example "script"
+        # find all the tags in the DOM that match the tag_name, for example "script".
+        for tag in soup.find_all(tag_name):
+        
+            # tag is a BeautifulSoup tag object.
 
-        for attr_name, attr_value, allow_or_deny in cleaner.tag_acl[tag_name]:
+            # by default, assume we will extract tag (remove it from the DOM).
+            extract_tag = True
 
-            #
-            # tag attr_name:
-            #
-            #   * "type"
-            #   * "id"
-            #   * "class"
-            #   * ect
-            #
-            # tag attr_value:
-            #
-            #   * "math/tex; mode=display"
-            #   * "<uuid>"
-            #   * ect
-            #
-            # allow_or_deny:
-            #
-            #  * "allow"
-            #  * "deny"
-            #
-            log.info("{} {} {}".format(attr_name, attr_value, allow_or_deny))
+            for attr_name, attr_value, allow_or_deny in cleaner.tag_acl[tag_name]:
 
-            for tag in soup.find_all(tag_name):
+                # tag attr_name:
+                #
+                #   * "type"
+                #   * "id"
+                #   * "class"
+                #   * ect
+                #
+                # tag attr_value:
+                #
+                #   * "math/tex; mode=display"
+                #   * "<uuid>"
+                #   * ect
+                #
+                # allow_or_deny:
+                #
+                #  * "allow"
+                #  * "deny"
 
-                # tag is a BeautifulSoup tag object.
-                log.info("{}".format(tag.attrs.get(attr_name)))
+                log.info("{} {} {}".format(attr_name, attr_value, allow_or_deny))
 
                 if allow_or_deny == "allow":
 
                     if tag.attrs.get(attr_name) == attr_value:
                         # this tag attr_name/attr_value is whitelisted.
-                        continue
+                        # do not extract tag (remove it from the DOM)
+                        extract_tag = False
+                        break
 
-                log.debug(
+            if extract_tag:
+                log.info(
                     "Extracting {} tag with attr_name {} and attr_value {}".format(
                         tag_name, attr_name, attr_value
                     )
