@@ -78,3 +78,11 @@ def datetime_to_timestamp(dt):
 def timestamp_to_ago_string(timestamp):
     """Accepts a timestamp and returns a human readable string"""
     return human(timestamp_to_datetime(timestamp), 2, abbreviate=True)
+
+
+def dollars_to_cents(dollars):
+    return int(float(dollars)*100)
+
+
+def cents_to_dollars(cents):
+    return int(cents)/100.0
