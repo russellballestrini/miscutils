@@ -62,7 +62,7 @@ def get_children_settings(settings, parent_key):
 
 
 def timestamp_to_datetime(timestamp):
-    """Accepts a timestamp and returns a date string"""
+    """Accepts a milliseconds timestamp integer and returns a datetime"""
     return datetime.fromtimestamp(timestamp / 1000.0)
 
 
@@ -71,8 +71,9 @@ def timestamp_to_date_string(timestamp):
 
 
 def datetime_to_timestamp(dt):
+    """returns an integer timestamp in milliseconds"""
     epoch_dt = datetime(1970,1,1)
-    return (dt - epoch_dt).total_seconds()
+    return (dt - epoch_dt).total_seconds() * 1000
 
 
 def timestamp_to_ago_string(timestamp):
