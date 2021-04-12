@@ -4,6 +4,7 @@ Original Sourcecode pulled from:
 https://thadeusb.com/weblog/2010/10/10/python_scale_hex_color/
 """
 
+
 def clamp(val, minimum=0, maximum=255):
     if val < minimum:
         return minimum
@@ -27,7 +28,7 @@ def color_scale(hex_str, scale_factor):
     #4F75D2
     """
 
-    hex_str = hex_str.strip('#')
+    hex_str = hex_str.strip("#")
 
     if scale_factor < 0 or len(hex_str) != 6:
         return hex_str

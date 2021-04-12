@@ -49,6 +49,7 @@ def get_children_settings(settings, parent_key):
     """
     # needed to support expanding ENV vars from ini.
     from os.path import expandvars
+
     # the +1 is the . between parent and child settings.
     parent_len = len(parent_key) + 1
     children = {}
@@ -72,7 +73,7 @@ def timestamp_to_date_string(timestamp):
 
 def datetime_to_timestamp(dt):
     """returns an integer timestamp in milliseconds"""
-    epoch_dt = datetime(1970,1,1)
+    epoch_dt = datetime(1970, 1, 1)
     return (dt - epoch_dt).total_seconds() * 1000
 
 
@@ -82,8 +83,8 @@ def timestamp_to_ago_string(timestamp):
 
 
 def dollars_to_cents(dollars):
-    return int(float(dollars)*100)
+    return int(float(dollars) * 100)
 
 
 def cents_to_dollars(cents):
-    return int(cents)/100.0
+    return int(cents) / 100.0

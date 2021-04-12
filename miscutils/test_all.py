@@ -6,14 +6,12 @@ import unittest
 
 
 class TestPhoneNumber(unittest.TestCase, object):
-
     def test_is_phone_number_valid_4(self):
         phone_number = "4"
         self.assertFalse(is_phone_number_valid(phone_number))
 
 
 class TestDollarCentConversions(unittest.TestCase, object):
-
     def test_dollars_to_cents(self):
         self.assertEqual(342, dollars_to_cents(3.42))
         self.assertEqual(342, dollars_to_cents("3.42"))

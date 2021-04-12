@@ -36,7 +36,7 @@ def svgtar(
 ):
     """Return an multiline svg string."""
     bg = _bg_color(h=h) if bg is None else bg
-    font_size = size * .6 if font_size is None else font_size
+    font_size = size * 0.6 if font_size is None else font_size
     options = {
         "text": text,
         "size": size,

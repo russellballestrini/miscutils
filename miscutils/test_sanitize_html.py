@@ -1,7 +1,7 @@
 from .sanitize_html import (
-  default_tag_acl,
-  default_cleaner,
-  clean_raw_html,
+    default_tag_acl,
+    default_cleaner,
+    clean_raw_html,
 )
 
 import unittest
@@ -19,8 +19,8 @@ RAW_HTML = """
 </html>
 """
 
-class SanitizeHtml(unittest.TestCase, object):
 
+class SanitizeHtml(unittest.TestCase, object):
     def test_default_tag_acl(self):
         tag_acl = default_tag_acl()
         self.assertFalse(tag_acl)
@@ -36,19 +36,21 @@ class SanitizeHtml(unittest.TestCase, object):
         }
         cleaner = default_cleaner(tag_acl)
         clean_html = clean_raw_html(RAW_HTML, cleaner)
-        
+
+        self.assertIn("This is a test.", clean_html)
         self.assertIn(
-            'This is a test.', clean_html
+            '<script type="not-a-hacker">alert("This javascript tag/type was allowed.");</script>',
+            clean_html,
         )
         self.assertIn(
-            '<script type="not-a-hacker">alert("This javascript tag/type was allowed.");</script>', clean_html
-        )
-        self.assertIn(
-            '<script type="also-not-a-hacker">alert("This javascript tag/type was allowed.");</script>', clean_html
+            '<script type="also-not-a-hacker">alert("This javascript tag/type was allowed.");</script>',
+            clean_html,
         )
         self.assertNotIn(
-            '<script type="a-hacker">alert("This javascript tag/type was allowed.");</script>', clean_html
+            '<script type="a-hacker">alert("This javascript tag/type was allowed.");</script>',
+            clean_html,
         )
         self.assertNotIn(
-            '<script type="unknown-hacker">alert("This javascript tag/type was allowed.");</script>', clean_html
+            '<script type="unknown-hacker">alert("This javascript tag/type was allowed.");</script>',
+            clean_html,
         )

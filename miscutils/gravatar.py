@@ -1,5 +1,6 @@
 from hashlib import md5
 
+
 def gravatar_client(email, size=48, rating="g", default="retro", force_default=False):
     """Return a gravatar API URI."""
     query_params = ["s={}".format(size), "r={}".format(rating), "d={}".format(default)]

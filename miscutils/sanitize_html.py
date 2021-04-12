@@ -29,9 +29,9 @@ def default_cleaner(tag_acl=None):
 
     We use BeautifulSoup to conditionally whitelist or blacklist
     tags based on tag attr_name and attr_value pairs.
-    
+
     For example, this will whitelist Mathjax script tags:
-    
+
     tag_acl = {
         "script": [
             ("type", "math/tex; mode=display", "allow"),
@@ -39,13 +39,13 @@ def default_cleaner(tag_acl=None):
     }
 
     While this example will blacklist Mathjax script tags:
-    
+
     tag_acl = {
         "script": [
             ("type", "math/tex; mode=display", "deny"),
         ],
     }
-    
+
     """
     if tag_acl is None:
         tag_acl = {}
@@ -96,7 +96,7 @@ def default_cleaner(tag_acl=None):
 
 def markdown_to_raw_html(data, extra_extensions=None):
     """Accepts a markdown string, returns raw unsanitized HTML"""
-    extensions=[
+    extensions = [
         "markdown.extensions.codehilite",
         "markdown.extensions.fenced_code",
     ]
@@ -121,7 +121,7 @@ def conditional_tag_filter(soup, cleaner):
 
         # find all the tags in the DOM that match the tag_name, for example "script".
         for tag in soup.find_all(tag_name):
-        
+
             # tag is a BeautifulSoup tag object.
 
             # by default, assume we will extract tag (remove it from the DOM).
