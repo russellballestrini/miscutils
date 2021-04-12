@@ -7,9 +7,9 @@ def is_phone_number_valid(phone_number):
     phone_number = phone_number.replace(".", "")
     # allow spaces.
     phone_number = phone_number.replace(" ", "")
-    # allow spaces.
+    # allow left parethesis.
     phone_number = phone_number.replace("(", "")
-    # allow spaces.
+    # allow right parethesis.
     phone_number = phone_number.replace(")", "")
 
     # must be left with only digits.
