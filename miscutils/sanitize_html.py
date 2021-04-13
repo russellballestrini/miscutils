@@ -52,7 +52,7 @@ def default_cleaner(tag_acl=None):
 
     maybe_safe_tags = ["pre", "table", "tr", "td"]
 
-    tags = maybe_safe_tags + tag_acl.keys() + markdown_tags
+    tags = maybe_safe_tags + list(tag_acl.keys()) + markdown_tags
     attrs = markdown_attrs
 
     attrs["img"].append("width")
