@@ -16,7 +16,7 @@ with open("requirements.txt", "r") as f:
 
 setup(
     name="miscutils",
-    version="0.0.10",
+    version="0.0.11",
     description="Random misc lib utils for Python needed in lots of my projs",
     keywords="random misc lib utils for Python",
     # long_description=open("README.rst").read(),
