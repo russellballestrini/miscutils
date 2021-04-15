@@ -17,7 +17,7 @@ def _create_pattern(version="[1-5]"):
             + version
             + "[a-f0-9]{3}-"
             + "[89ab][a-f0-9]{3}-"
-            + "[a-f0-9]{12}$"
+            + "[a-f0-9]{12}"
         ),
         re.IGNORECASE,
     )
