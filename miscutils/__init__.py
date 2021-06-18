@@ -5,9 +5,9 @@ from datetime import datetime
 
 def generate_password(size=32):
     """Return a system generated password"""
-    from string import letters, digits
     from random import choice
-
+    letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    digits = "0123456789"
     pool = letters + digits
     return "".join([choice(pool) for i in range(size)]).encode("utf-8")
 
