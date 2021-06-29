@@ -35,8 +35,9 @@ def color_scale(hex_str, scale_factor):
 
     r, g, b = int(hex_str[:2], 16), int(hex_str[2:4], 16), int(hex_str[4:], 16)
 
-    r = clamp(r * scale_factor)
-    g = clamp(g * scale_factor)
-    b = clamp(b * scale_factor)
+    r = int(clamp(r * scale_factor))
+    g = int(clamp(g * scale_factor))
+    b = int(clamp(b * scale_factor))
 
+    #return "#%02x%02x%02x" % (r, g, b)
     return "#%02x%02x%02x" % (r, g, b)
