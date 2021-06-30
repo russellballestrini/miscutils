@@ -9,7 +9,7 @@ def generate_password(size=32):
     letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     digits = "0123456789"
     pool = letters + digits
-    return "".join([choice(pool) for i in range(size)]).encode("utf-8")
+    return "".join([choice(pool) for i in range(size)])
 
 
 def get_int_or_bool_or_none_or_str(value):
