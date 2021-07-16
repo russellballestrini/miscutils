@@ -8,7 +8,7 @@ from bleach.sanitizer import Cleaner
 from bleach.linkifier import LinkifyFilter
 from bleach.callbacks import nofollow, target_blank
 
-from bleach_whitelist import markdown_tags, markdown_attrs, all_styles
+from bleach_allowlist import markdown_tags, markdown_attrs, all_styles
 
 from bs4 import BeautifulSoup
 
