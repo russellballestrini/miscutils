@@ -68,7 +68,14 @@ def send_email(
         # the call to msg.as_string() performs it's own bytes encoding...
         msg["DKIM-Signature"] = sig[len("DKIM-Signature: ") :].decode()
 
-    # TODO: react if connecting to postfix is a socket error.
+        try:
+            # Python 3 libraries expect bytes.
+            msg_data = msg.as_bytes()
+        except:
+            # Python 2 libraries expect strings.
+            msg_data = msg.as_string()
+
+    # TODO: react if connecting to relay (localhost postfix) is a socket error.
     s = smtplib.SMTP(relay)
     s.sendmail(sender_email, [to_email], msg_data)
     s.quit()
@@ -86,6 +93,7 @@ def send_pyramid_email(request, to_email, subject, message_text, message_html):
     relay = request.app.get("email.relay", "localhost")
     dkim_private_key_path = request.app.get("email.dkim_private_key_path", "")
     dkim_selector = request.app.get("email.dkim_selector", "")
+
     send_email(
         to_email,
         sender_email,
