@@ -80,7 +80,11 @@ def default_cleaner(tag_acl=None):
                 # attributes for the given tag_name.
                 attrs[tag_name].append(attr_name)
 
-    cleaner = Cleaner(tags=tags, attributes=attrs, styles=all_styles)
+    cleaner = Cleaner(tags=tags, attributes=attrs)
+
+    # doesn't do anything, but i used to be able to pass it via constructor.
+    # https://github.com/yourcelf/bleach-allowlist/blob/main/bleach_allowlist/bleach_allowlist.py
+    #cleaner.all_styles=all_styles
 
     # disable link_protection by default.
     cleaner.link_protection = False
