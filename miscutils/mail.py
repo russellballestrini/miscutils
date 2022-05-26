@@ -21,6 +21,7 @@ def send_email(
     relay="localhost",
     dkim_private_key_path="",
     dkim_selector="",
+    dkim_signature_algorithm="ed25519-sha256",
 ):
 
     # the `email` library assumes it is working with string objects.
@@ -62,6 +63,7 @@ def send_email(
             domain=sender_domain.encode(),
             privkey=dkim_private_key.encode(),
             include_headers=headers,
+            signature_algorithm=dkim_signature_algorithm.encode(),
         )
         # add the dkim signature to the email message headers.
         # decode the signature back to string_type because later on
@@ -93,6 +95,7 @@ def send_pyramid_email(request, to_email, subject, message_text, message_html):
     relay = request.app.get("email.relay", "localhost")
     dkim_private_key_path = request.app.get("email.dkim_private_key_path", "")
     dkim_selector = request.app.get("email.dkim_selector", "")
+    dkim_signature_algorithm = request.app.get("email.dkim_signature_algorithm", "ed25519-sha256")
 
     send_email(
         to_email,
@@ -103,4 +106,5 @@ def send_pyramid_email(request, to_email, subject, message_text, message_html):
         relay,
         dkim_private_key_path,
         dkim_selector,
+        dkim_signature_algorithm,
     )
