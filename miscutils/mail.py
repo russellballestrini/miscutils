@@ -86,11 +86,11 @@ def send_email(
 
 def send_pyramid_email(request, to_email, subject, message_text, message_html):
     """Thin wrapper around `send_email` to customise settings using request object."""
-    default_sender = "no-reply@{}".format(request.app_domain)
+    default_sender = "no-reply@{}".format(request.domain)
     sender_email = request.app.get("email.sender", default_sender)
     minute = datetime.now().strftime("%M")
     subject = "{} | {} | {}".format(
-        subject, minute, request.app.get("email.subject_postfix", request.app_domain)
+        subject, minute, request.app.get("email.subject_postfix", request.domain)
     )
     relay = request.app.get("email.relay", "localhost")
     dkim_private_key_path = request.app.get("email.dkim_private_key_path", "")
